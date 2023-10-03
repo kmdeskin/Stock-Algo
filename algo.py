@@ -1,5 +1,4 @@
 #important necessary libraries 
-import xlsxwriter #for creating excel files 
 import pandas as pd #pandas data science library
 import requests #for http requests
 import math #math module

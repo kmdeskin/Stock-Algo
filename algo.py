@@ -1,75 +1,61 @@
-#important necessary libraries 
-import pandas as pd #pandas data science library
-import requests #for http requests
-import math #math module
-import talib #used to calculate RSI 
-import numpy as np #numerical computing library
+#import necessary libraries 
+import pandas as pd 
+import requests 
+import talib
+import numpy as np
+import math
+from secrets import API_TOKEN
 
-from secrets import API_TOKEN #import the api 
-stocks = pd.read_csv('sp_500_stocks.csv') #read the stocks from CSV file and store data in a panda library 
-symbol = 'GOOGL' #google symbol 
-api_url = f'https://sandbox.iexapis.com/stable/stock/{symbol}/quote?token={API_TOKEN}' #this constructs the URL for the API address
-data = requests.get(api_url).json() #sends an HTTP GET request to to api url 
-#the data variable contains important information about the stock like last traded price, market cap, etc. 
-data #outputs the data dictionary
-
-#data needs to be in a proper format 
-data['latestprice']
-data['marketcap']
-
-#store this information in a table with certain characteristics 
-mycolumns = ['Ticker', 'Price', 'Market Capitalization', 'Number Of Shares to Buy']
-dataframe = pd.DataFrame(columns = mycolumns)
-
-#create a series with the pandas array that accesses the lastest price and market cap and add new row to DataFrame 
-dataframe = dataframe.append(pd.Series(['GOOGL', data['latestprice'], data['marketcap'], 'N/A'], index = mycolumns), ignore_index = True)
-dataframe
-
-#store the data for all stocks in the dataframe using a for loop 
-dataframe = pd.DataFrame(columns = mycolumns)
-for symbol in stocks['Ticker']: #this is the for loop
+def fetch_stock_data(symbol):
+    #this function takes a stock symbol as input and makes an HTTP GET request to the IEX Cloud API to fetch information about the stock
+    #it returns the data as a JSON object
     api_url = f'https://sandbox.iexapis.com/stable/stock/{symbol}/quote?token={API_TOKEN}'
     data = requests.get(api_url).json()
-    dataframe = dataframe.append(pd.Series(['GOOGL', data['latestprice'], data['marketcap'], 'N/A'], index = mycolumns), ignore_index = True)
+    return data
 
-#now, in order to speed up the process, implement batch API calls instead of individually assessing each stock out of the 500 
-#create a utility function that splits a list up into smaller chunks to create sublists 
-#because IEX cloud lets you make batch calls in 100 tickers per request, there will be 500/100 = 5 groups to save time 
-def chunks(lst, n):
-    for i in range(0, len(lst), n):
-        yield lst[i:i + n]
+def calculate_rsi(historical_data):
+    #this function calculates the Relative Strength Index (RSI) for a given historical price data
+    #it extracts closing prices from the historical data, calculates the RSI using talib with a time period of 14, and returns the last RSI value
+    closing_prices = [item['close'] for item in historical_data]
+    return talib.RSI(np.array(closing_prices), timeperiod=14)[-1]
 
-#after this function is created, the new sublists can be made
-sublists = list(chunks(stocks['Ticker'], 100))
-strings = []
-for i in range(0, len(sublists)):
-    strings.append(','.join(sublists[i]))
-dataframe = pd.DataFrame(columns = mycolumns)
-for string in strings: #implement the new sublists in the for loop to access the stock information 
-    api_url = f'https://sandbox.iexapis.com/stable/stock/{symbol}/quote?token={API_TOKEN}'
-    data = requests.get(api_url).json()
-    for symbol in string.split(','):
-        dataframe = dataframe.append(pd.Series(['GOOGL', data['latestprice'], data['marketcap'], 'N/A'], index = mycolumns), ignore_index = True)
+def main():
+    #read a CSV file ('sp_500_stocks.csv') containing information about S&P 500 stocks using pandas
+    stocks = pd.read_csv('sp_500_stocks.csv')
+    #initializes a pandas DataFrame with specific column names
+    mycolumns = ['ticker', 'price', 'market capitalization', 'number of shares to buy']
+    dataframe = pd.DataFrame(columns=mycolumns)
 
+    #iterate over each stock symbol in the CSV file
+    for symbol in stocks['ticker']:
+        #fetch the latest stock data (including the latest price) using the fetch_stock_data function
+        data = fetch_stock_data(symbol)
+        #fetch historical price data for the past year for that stock
+        historical_data = requests.get(f'https://sandbox.iexapis.com/stable/stock/{symbol}/chart/1y?token={API_TOKEN}').json()
+        #calculate the RSI for the stock using the calculate_rsi function
+        rsi = calculate_rsi(historical_data)
 
-#now the number of shares to buy can be calculated
-#let the user determine how big the stock portfolio should be  
-portfolio = input("enter the value of your portfolio: ")
-try:
-    val = float(portfolio)
-except ValueError:
-    print("that's not a number! \n try again:")
-    portfolio = input("enter the value of your portfolio:")
-#this is the algorithm 
-position = float(portfolio) / len(dataframe.index)
-for i in range(0, len(dataframe['Ticker'])-1):
-    dataframe.loc[i, 'Number Of Shares to Buy'] = math.floor(position / dataframe['Price'][i])
-dataframe
+        #calculate the combined weight (e.g., 70% based on RSI, 30% equal weight)
+        rsi_weight = 0.7 if rsi < 30 else (0.3 if rsi > 70 else 0.5)
+        equal_weight = 1 / len(stocks)
+        combined_weight = 0.7 * rsi_weight + 0.3 * equal_weight
 
+        #calculate the position in each stock based on the user's portfolio value and the weight
+        portfolio = input(f"enter the value of your portfolio for {symbol}: ")
+        try:
+            val = float(portfolio)
+        except ValueError:
+            print(f"that's not a number! please try again for {symbol}.")
+            continue
 
+        position = val * combined_weight
+        shares_to_buy = math.floor(position / data['latestprice'])
 
+        # Append the results to the DataFrame
+        dataframe = dataframe.append(pd.Series([symbol, data['latestprice'], data['marketcap'], shares_to_buy], index=mycolumns), ignore_index=True)
 
+    # Print the resulting DataFrame, which includes the calculated number of shares to buy for each stock.
+    print(dataframe)
 
-
-
-
+if __name__ == "__main__":
+    main()

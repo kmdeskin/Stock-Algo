@@ -16,13 +16,6 @@ The RSI is a momentum indicator that helps assess whether a stock or market is o
 
 ## Example Usage 
 
-## Project Structure 
-
-stock-algo/
-│   algo.py
-│   sp_500_stocks.csv
-│   secrets.py
-
 ## Features
 
 - Equal weight allocation strategy for S&P 500 stocks.

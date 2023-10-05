@@ -28,11 +28,11 @@ Follow the steps below to use the algorithm:
 Before you begin, ensure you have Python and the required libraries installed. 
 Required libraries:
 
--pandas: used for handling stock data and creating DataFrames to organize and process data.
--requests: used to send requests to the IEX Cloud API to fetch stock information, including the latest prices and historical data.
--talib: use talib to calculate technical indicators like the Relative Strength Index (RSI) for stocks based on historical price data. 
--numpy: used for various numerical operations, especially when working with historical stock price data.
--math: used for rounding down the number of shares to buy based on portfolio value and stock price.
+- pandas: used for handling stock data and creating DataFrames to organize and process data.
+- requests: used to send requests to the IEX Cloud API to fetch stock information, including the latest prices and historical data.
+- talib: use talib to calculate technical indicators like the Relative Strength Index (RSI) for stocks based on historical price data. 
+- numpy: used for various numerical operations, especially when working with historical stock price data.
+- math: used for rounding down the number of shares to buy based on portfolio value and stock price.
 
 ### API Token Storage
 
@@ -49,13 +49,19 @@ In the main script or module where you need to use the API token (like main.py),
   
   from secrets import API_TOKEN
 
-### What is IEX cloud?!
+### Running the algorithm 
+
+To run the algorithm, execute algo.py in your terminal or IDE:
+   
+   python algo.py
+
+### View the results 
+
+After the algorithm completes, it will display the calculated number of shares to buy for each stock. You can use this information to make investment decisions.
+
+## What is IEX cloud?!
 
 [IEX Cloud](https://iexcloud.io/) is a financial data platform that provides access to a wide range of financial market data, including stock prices, market statistics, and more. This project utilizes IEX Cloud's API to fetch real-time and historical stock market data.
-
-## Installation
-
-
 
 
 

@@ -51,10 +51,10 @@ def main():
         position = val * combined_weight
         shares_to_buy = math.floor(position / data['latestprice'])
 
-        # Append the results to the DataFrame
+        #append the results to the DataFrame
         dataframe = dataframe.append(pd.Series([symbol, data['latestprice'], data['marketcap'], shares_to_buy], index=mycolumns), ignore_index=True)
 
-    # Print the resulting DataFrame, which includes the calculated number of shares to buy for each stock.
+    #print the resulting DataFrame, which includes the calculated number of shares to buy for each stock
     print(dataframe)
 
 if __name__ == "__main__":

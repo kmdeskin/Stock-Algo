@@ -14,6 +14,15 @@ The equal weight algorithm assigns an equal portion of the investment to each st
 
 The RSI is a momentum indicator that helps assess whether a stock or market is overbought or oversold. By incorporating RSI, our algorithm aims to make informed decisions based on market momentum.
 
+## Example Usage 
+
+## Project Structure 
+
+stock-algo/
+│   algo.py
+│   sp_500_stocks.csv
+│   secrets.py
+
 ## Features
 
 - Equal weight allocation strategy for S&P 500 stocks.
@@ -132,6 +141,10 @@ The `main` function interacts with the user to obtain portfolio value for each s
 - Ensure that you have the necessary dependencies, including Pandas, NumPy, and any custom functions (`fetch_stock_data` and `calculate_rsi`), set up correctly before running this function.
 
 - Make sure you have API_TOKEN defined in your code to access external APIs.
+
+## Acknowledgements 
+
+I would like to thank the creators of IEX Cloud for providing valuable financial market data.
 
 
 

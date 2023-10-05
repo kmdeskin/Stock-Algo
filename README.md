@@ -63,17 +63,17 @@ After the algorithm completes, it will display the calculated number of shares t
 
 [IEX Cloud](https://iexcloud.io/) is a financial data platform that provides access to a wide range of financial market data, including stock prices, market statistics, and more. This project utilizes IEX Cloud's API to fetch real-time and historical stock market data.
 
-## How does the algorithm work?
+# How does the algorithm work?
 
-I implemented multiple functions in this algorithm these include:
+I implemented multiple functions in this algorithm, these include:
 
-### fetch_stock_data 
+## fetch_stock_data 
 
 The `fetch_stock_data` function is a utility within this project that allows you to retrieve stock information for a specified stock symbol using the IEX Cloud API. Here's how it works:
 
 This function serves the purpose of fetching real-time stock data for analysis, reporting, or any other use. It takes a single argument, `symbol`, which should be a valid stock symbol, and it returns the stock information as a JSON object.
 
-### calculate_rsi 
+## calculate_rsi 
 
 The `calculate_rsi` function is a Python function designed to calculate the Relative Strength Index (RSI) for a given set of historical price data. It uses the Technical Analysis Library (TA-Lib) to perform this calculation. Here's how it works:
 
@@ -86,7 +86,7 @@ The function expects a single argument, `historical_data`, which should be a lis
 ### Output
 The function returns the last calculated RSI value as a floating-point number.
 
-### main 
+## main 
 
 The `main` function is a central component of this project, responsible for performing the following tasks:
 
